@@ -12,7 +12,9 @@ if __name__ == "__main__":
 L = {aNbN : N >= 0}             -      1
 L = {aNb2N : N >= 0}            -      2
 L = {aMbNc(M+N) : M,N >= 0}     -      3
-L = {wwR : w ∈ (a+b)*}          -      4
+L = {aNbMcMdN : M,N >= 0}       -      4
+L = {wcwR : w ∈ (a+b)*}         -      5
+L = {wwR : w ∈ (a+b)*}          -      6
 """
                         )
     args = parser.parse_args()
