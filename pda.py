@@ -35,7 +35,7 @@ class PDA:
         if self.initial_state not in self.states:
             logging.error(f"Initial state {self.initial_state} is invalid!")
 
-        # CHeck whether or not final state is valid
+        # Check whether or not final state is valid
         for f in self.final_states:
             if f not in self.states:
                 logging.error(f"Final state {f} is invalid!")
@@ -47,8 +47,11 @@ class PDA:
     def exec(self, input_str):
 
         current_config = []
+
+        # Create initial configuration based on input string, initial stack symbol, initial state
         current_config.append(RunningConfig(
-            input_str, [self.initial_stack_symbol], self.initial_state))
+            input_str, [self.initial_stack_symbol], self.initial_state
+        ))
 
         # Print initial configuration
         print("\x1b[32mInitial configuration: \x1b[0m")
@@ -58,6 +61,7 @@ class PDA:
 
             new_config = []
 
+            # Iterate through each acceptable configuration obtained from previous stage
             for idx, c in enumerate(current_config):
 
                 new = 0
@@ -69,10 +73,11 @@ class PDA:
 
                 print(f"\x1b[32mRunning for configuration {idx + 1}:\n\x1b[0m")
 
+                # If there is remaining input
                 if c.remaining_input:
                     new = self.update_configs(c)
 
-                # If there are lambda transitions (and no remaining input)
+                # Else, if there are lambda transitions (and no remaining input)
                 elif (c.state in self.transitions and
                       '' in self.transitions[c.state] and
                       c.stack[-1] in self.transitions[c.state]['']):
@@ -86,6 +91,10 @@ class PDA:
                     for i, n in enumerate(new):
                         print(f"\x1b[34mOutput configuration {i + 1}:\x1b[0m")
                         n.printState()
+                
+                # Reached a dead state
+                else:
+                    print("\x1b[31mDead State reached!\x1b[31m")
 
             current_config = new_config
 
@@ -117,21 +126,27 @@ class PDA:
 
         new_configs = []
 
+        # Iterate through each acceptable transition
         for transition in transitions:
 
+            # Get input symbol, new state, new stack top from transition
             input_symbol = transition[0]
             new_state = transition[1]
             new_stack_top = transition[2]
 
             remaining_input = config.remaining_input
 
-            # If input is not lambda
+            # If input is not lambda, update remaining input
             if input_symbol:
                 remaining_input = remaining_input[1:]
 
-            # Add new config based on transition
-            new_configs.append(RunningConfig(remaining_input, self.stack_replace_top(
-                config.stack.copy(), new_stack_top), new_state))
+            # Add new configuration based on transition (And update stack)
+            new_configs.append(
+                RunningConfig(remaining_input, 
+                    self.stack_replace_top(config.stack.copy(), new_stack_top),
+                    new_state
+                )
+            )
 
         return new_configs
 
@@ -143,6 +158,7 @@ class PDA:
 
         if state in self.transitions and symbol in self.transitions[state] and stack_symbol in self.transitions[state][symbol]:
 
+            # Add each transition to list, and return it
             for transition in self.transitions[state][symbol][stack_symbol]:
                 out.append([symbol, transition[0], transition[1]])
 
