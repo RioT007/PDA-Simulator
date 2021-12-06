@@ -6,7 +6,7 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         description="PushDown Automata Simulator", allow_abbrev=False, formatter_class=RawTextHelpFormatter
     )
-    # Flag to be specified while running to pass video as input
+    # Flag to be specified to select language to be loaded
     parser.add_argument('-i', "--input", action = 'store', type = str, required = "True",
                         help="""Enter the language you want:
 L = {aNbN : N >= 0}             -      1
